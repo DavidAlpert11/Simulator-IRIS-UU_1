@@ -1,0 +1,30 @@
+clc
+clear
+
+%% load command infromation from IRIS planing
+file_to_write = 'testIRIS';
+OutputFolderName = [pwd,'\IRIS-UU-output\'];
+Command = InitCommand(file_to_write,OutputFolderName);
+
+%% Run the simulation
+mainUAVsimulation();
+
+%% Check POI and Collision
+
+%path to the output result of iris (in the ubuntu machine)
+%the file has to be reconise in ubuntu
+IRIS_output_ubuntu_folder = '\\wsl.localhost\Ubuntu\home\davidalpert11\Projects\IRIS-UU\Results\test';
+
+fileName = fopen([IRIS_output_ubuntu_folder,'\','_',file_to_write],'w');
+fprintf(fileName, '%f %f %f %f %f\n', PoseUpdateTheta');
+% Closing
+fclose(fileName)
+
+
+resultUAVSimulationFile = ['Results/',app.OutputTableresultfoldernameEditField.Value,'/Run',num2str(app.counter),'/',app.OutputUAV_SimulationfilenameEditField.Value,'_',app.InputIRISfilenameEditField.Value];
+seed =2;
+
+IRIS_build_folder=app.IRISpathEditField.Value;
+CommandToPowershell = ['powershell cd ',IRIS_build_folder,'; wsl '];
+system([CommandToPowershell,'./app/checkPOIandCollision ',resultUAVSimulationFile,' ',seed,' ',num2str(1)])
+
